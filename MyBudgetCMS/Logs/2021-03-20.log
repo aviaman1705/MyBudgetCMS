@@ -1,0 +1,11 @@
+2021-03-20 09:31:01.8846 ERROR    - CategoryController - GetData() 20/03/2021 09:31:01 
+2021-03-20 09:31:01.9175 ERROR    - CategoryController - System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Convert.ToInt32(String value)
+   at MyBudgetCMS.Controllers.Api.CategoryController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\CategoryController.cs:line 31 System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Convert.ToInt32(String value)
+   at MyBudgetCMS.Controllers.Api.CategoryController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\CategoryController.cs:line 31
+2021-03-20 09:31:01.9633 ERROR    - CategoryController - ============================== 

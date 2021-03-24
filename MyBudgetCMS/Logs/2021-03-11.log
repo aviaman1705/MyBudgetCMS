@@ -1,0 +1,17 @@
+2021-03-11 11:28:31.4872 ERROR    - CategoryController - AddCategory() 11/03/2021 11:28:31 
+2021-03-11 11:28:31.5161 ERROR    - CategoryController - Input string was not in a correct format. 
+2021-03-11 11:28:31.5161 ERROR    - CategoryController - ============================== 
+2021-03-11 12:26:28.3773 ERROR    - MonthlyBudgetController - EditMonthlyBudget() 11/03/2021 12:26:28 
+2021-03-11 12:26:28.4142 ERROR    - MonthlyBudgetController - 
+Unmapped members were found. Review the types and members below.
+Add a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type
+For no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters
+=====================================================================================
+AutoMapper created this type map for you, but your types cannot be mapped using the current configuration.
+MonthlyBudgetDto -> MonthlyBudget (Destination member list)
+MyBudgetCMS.Models.Dto.MonthlyBudgetDto -> MyBudgetCMS.Models.Entities.MonthlyBudget (Destination member list)
+
+Unmapped properties:
+PaymentsPerMonths
+ 
+2021-03-11 12:26:28.4142 ERROR    - MonthlyBudgetController - ============================== 

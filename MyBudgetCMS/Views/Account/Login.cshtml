@@ -1,0 +1,36 @@
+﻿@model MyBudgetCMS.Models.Dto.LoginUserDto
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<section class="container-fluid">
+    <section class="row justify-content-center">
+        <section class="col-12 col-sm-6 col-md-3 col-lg-offset-4">
+            <img src="~/Images/icons/Anonimus.png" class="bg" />
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-container" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4 class="text-center font-eight-bold">כניסה</h4>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label form-lbl" })
+                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control form-input", id = "exampleInputUsername", placeholder = "הזן מייל" } })
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label form-lbl" })
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control form-input", @placeholder = "הזן סיסמא" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("CustomError", new { @class = "text-danger" })
+                </div>
+                <div class="form-group form-check">
+                    <label class="control-label form-lbl" for="HasSidebar">זכור אותי</label>
+                    @Html.EditorFor(model => model.RememberMe, new { @class = "form-control form-checkbox" })
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">כניסה</button>
+            }
+
+        </section>
+    </section>
+</section>

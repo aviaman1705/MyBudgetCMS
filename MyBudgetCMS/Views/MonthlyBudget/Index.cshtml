@@ -1,0 +1,112 @@
+﻿@model MyBudgetCMS.Models.Dto.MonthlyBudgetGridDto
+@{
+    ViewBag.Title = "הכנסות";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12 title-section">
+        <h2 class="main-page-title">@ViewBag.Title</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12 buttons-section text-right">
+        @Html.ActionLink("הוספת הכנסה", "AddMonthlyBudget", null, new { @class = "btn btn-info" })
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="card mb-3">
+            <div class="card-header text-right">
+                <i class="fa fa-table"></i>
+                דוחות חודשיים
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead class="theader">
+                            <tr class="tr-header">
+                                <th class="th-header">מחיקה</th>
+                                <th class="th-header">עריכה</th>
+                                <th class="th-header">תיאור</th>
+                                <th class="th-header">תאריך</th>
+                                <th class="th-header">תקציב </th>
+                                <th class="th-header">מזהה ייחודי </th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(function () {
+
+            var text = "האם אתה בטוח שברצונך למחוק את הפריט ?";
+
+            $("#dataTable").dataTable({
+                "bServerSide": true, //make server side processing to true
+                "sAjaxSource": '/MyBudgetCMS/api/MonthlyBudget/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
+                "bProcessing": true,
+                "bLengthChange": false,
+                "sPaginationType": "full_numbers",//pagination type
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [0] },
+                    { 'bSortable': false, 'aTargets': [1] }
+                ],
+                "aoColumns": [
+                    {
+                        mData: '',
+                        render: (data, type, row) => {
+                            if (row.PaymentsCount == 0)
+                                return `<a href='../Admin/MonthlyBudget/DeleteMonthlyBudget/${row.Id}' class='btn btn-danger' onclick='return confirm("${text}")'>מחיקה</a>`;
+                            else
+                                return '';
+                        }
+                    },
+                    {
+                        mData: '',
+                        render: (data, type, row) => {
+                            return `<a href='../Admin/MonthlyBudget/EditMonthlyBudget/${row.Id}' class='btn btn-info'>ערוך</a>`;
+                        }
+                    },
+                    { "mData": "ShortDesc" },
+                    { "mData": "Date" },
+                    { "mData": "Budget" },
+                    { "mData": "Id" }
+                ],
+                "language": {
+                    "sSearch": "חפש",
+                    "lengthMenu": "Display _MENU_ records per page",
+                    "zeroRecords": "מצטערים אין תוצאות",
+                    "info": "מציג עמוד _PAGE_ מתוך _PAGES_",
+                    "infoEmpty": "No records available",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "processing": "טוען",
+                    "paginate": {
+                        "previous": "הקודם",
+                        "next": "הבא",
+                        "last": "אחרון",
+                        "first": "ראשון"
+                    }
+                }
+            });
+
+            $('div.dataTables_filter input').addClass('form-control');
+        });
+    </script>
+
+}

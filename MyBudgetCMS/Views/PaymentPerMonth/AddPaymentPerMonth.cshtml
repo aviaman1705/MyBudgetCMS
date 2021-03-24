@@ -1,0 +1,79 @@
+﻿@model MyBudgetCMS.Models.Dto.AddPaymentPerMonthDto
+
+@{
+    ViewBag.Title = "הוספת הוצאה";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12 title-section">
+        <h2 class="main-page-title">@ViewBag.Title</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-sm-12 col-xs-12"></div>
+    <div class="col-md-8 col-sm-12 col-xs-12">
+        @using (Html.BeginForm("AddPaymentPerMonth", "PaymentPerMonth", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActionDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 text-right">
+                        @Html.TextBoxFor(m => m.ActionDate, "{0:d}", new { @class = "form-control form-input datepicker" })
+                        @Html.ValidationMessageFor(m => m.ActionDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Sum, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 text-right">
+                        @Html.EditorFor(model => model.Sum, new { htmlAttributes = new { @class = "form-control form-input" } })
+                        @Html.ValidationMessageFor(model => model.Sum, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 text-right">
+                        @Html.DropDownListFor(model => model.CategoryID,
+                      (IEnumerable<SelectListItem>)ViewBag.Categories, "נא בחר קטגוריה",
+                      new
+                           {
+                               id = "ddlBudgets",
+                          @class = "form-control form-input"
+                      })
+                        @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12 form-buttons-section text-right">
+                        @Html.ActionLink("חזרה לרשימה", "Index", null, new { @class = "btn btn-info" })
+                        <input type="submit" value="הוספת הוצאה" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                dateFormat: "dd-mm-yy",
+                changemonth: true,
+                changeyear: true
+            });
+        });
+    </script>
+}
+
+

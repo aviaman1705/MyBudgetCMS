@@ -1,0 +1,73 @@
+﻿@model MyBudgetCMS.Models.Dto.DashboardDto
+@{
+    ViewBag.Title = "מערכת תשלומים";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 id="budget-monthly-text">התקציב לתאריך @Model.Date</h1>
+        </div>
+        <div class="col-lg-6 col-xs-12">
+            <h2 class="budget-num-text">הכנסות @Model.Income</</h2>
+        </div>
+        <div class="col-lg-6 col-xs-12">
+            <h2 class="budget-num-text">הוצאות @Model.expense</</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="circle-item-wrap">
+                <div class="circle-item">
+                    <h5 class="circle-item-text">חסכונות</h5>
+                    <h6 class="circle-item-text">&#8362;@Model.TwentyPercentageSavingsList.Sum(x => x.Sum).ToString("0.##")</h6>
+                </div>
+            </div>
+            <ul class="list-group">
+                @foreach (var item in Model.TwentyPercentageSavingsList)
+                {
+                    <li class="list-group-item"> &#8362; @item.Title @item.Sum.ToString("0.##")</li>
+                }
+            </ul>
+        </div>
+
+        <div class="col">
+            <div class="circle-item-wrap">
+                <div class="circle-item">
+                    <h5 class="circle-item-text">רצונות </h5>
+                    <h6 class="circle-item-text">&#8362;@Model.ThirtyPercentageDesiresList.Sum(x => x.Sum).ToString("0.##")</h6>
+                </div>
+            </div>
+            <ul class="list-group">
+                @foreach (var item in Model.ThirtyPercentageDesiresList)
+                {
+                    <li class="list-group-item"> &#8362; @item.Title @item.Sum.ToString("0.##")</li>
+                }
+            </ul>
+        </div>
+
+        <div class="col">
+            <div class="circle-item-wrap">
+                <div class="circle-item">
+                    <h5 class="circle-item-text">צרכים</h5>
+                    <h6 class="circle-item-text"> &#8362;@Model.FiftyPercentageNeedsList.Sum(x => x.Sum).ToString("0.##") </h6>
+                </div>
+            </div>
+            <ul class="list-group">
+                @foreach (var item in Model.FiftyPercentageNeedsList)
+                {
+                    <li class="list-group-item"> &#8362; @item.Title @item.Sum.ToString("0.##")</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3 class="currnet-budget-text"><span style="direction: ltr; display: inline-block;">@Model.CurrentBudget</span> תקציב נוכחי</h3>
+        </div>
+    </div>
+</div>
+
+
+
