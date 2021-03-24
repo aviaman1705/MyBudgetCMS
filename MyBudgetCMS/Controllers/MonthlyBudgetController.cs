@@ -48,14 +48,6 @@ namespace MyBudgetCMS.Controllers
                     return View(model);
                 }
 
-                var dateTime = model.Date;
-
-                //if (_monthlyBudgetRepository.GetAll().Any(x => x.Date.Year == dateTime.Year && x.Date.Month == dateTime.Month))
-                //{
-                //    ModelState.AddModelError("CustomError", "תקציב לחודש הנ''ל כבר קיים.");
-                //    return View(model);
-                //}
-
                 MonthlyBudget dto = Mapper.Map<MonthlyBudget>(model);
                 _monthlyBudgetRepository.Add(dto);
 
@@ -107,14 +99,6 @@ namespace MyBudgetCMS.Controllers
                 {
                     return View(model);
                 }
-
-                var dateTime = model.Date;
-                //Make sure title and slug are unique
-                //if (_monthlyBudgetRepository.GetAll().Where(x => x.Id != model.Id).Any(x => x.Date.Year == dateTime.Year && x.Date.Month == dateTime.Month))
-                //{
-                //    ModelState.AddModelError("CustomError", "תקציב לחודש הנ''ל כבר קיים.");
-                //    return View(model);
-                //}
 
                 //Get the entity
                 MonthlyBudget dto = _monthlyBudgetRepository.Get(model.Id);

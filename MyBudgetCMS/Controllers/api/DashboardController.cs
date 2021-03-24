@@ -24,23 +24,23 @@ namespace MyBudgetCMS.Controllers.api
             _dashboardRepository = dashboardRepository;
         }
 
-        public IHttpActionResult GetData()
-        {
-            try
-            {
-                var model = Mapper.Map<DashboardDto>(_dashboardRepository.GetDashboardData());
-                if (model != null)
-                    return Ok(model);
-                else
-                    return NotFound();
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"Index() {DateTime.Now}");
-                logger.Error(ex.Message);
-                logger.Error("==============================");
-                return InternalServerError();
-            }
-        }
+        //public IHttpActionResult GetData()
+        //{
+        //    try
+        //    {
+        //        var model = Mapper.Map<DashboardDto>(_dashboardRepository.GetDashboardData());
+        //        if (model != null)
+        //            return Ok(model);
+        //        else
+        //            return NotFound();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Error($"Index() {DateTime.Now}");
+        //        logger.Error(ex.Message);
+        //        logger.Error("==============================");
+        //        return InternalServerError();
+        //    }
+        //}
     }
 }

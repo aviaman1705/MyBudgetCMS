@@ -72,7 +72,7 @@ namespace MyBudgetCMS.Controllers
                     return View(model);
                 }
 
-                PaymentPerMonth dto = Mapper.Map<PaymentPerMonth>(model);                
+                PaymentPerMonth dto = Mapper.Map<PaymentPerMonth>(model);
                 _paymentPerMonthRepository.Add(dto);
 
                 return RedirectToAction("Index");
@@ -137,11 +137,8 @@ namespace MyBudgetCMS.Controllers
                     return Content("תקציב לא קיים");
                 }
                 else
-                {                    
-                    dto.Id = model.Id;                 
-                    dto.Sum = model.Sum;
-                    dto.CategoryID = model.CategoryID;
-                    dto.ActionDate = model.ActionDate;                    
+                {
+                    dto = Mapper.Map<PaymentPerMonth>(model);
 
                     //Update dto entity
                     _paymentPerMonthRepository.Update(dto);
@@ -181,13 +178,25 @@ namespace MyBudgetCMS.Controllers
 
         private List<SelectListItem> LoadBudgets()
         {
-            var budgets = _monthlyBudgetRepository.GetAll().Select(x => new SelectListItem() { Text = x.Date.ToString(), Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();
+            var budgets = _monthlyBudgetRepository.GetAll()
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Date.ToString(),
+                    Value = x.Id.ToString()
+                }).OrderBy(xx => xx.Text).ToList();
+
             return budgets;
         }
 
         private List<SelectListItem> LoadCategories()
         {
-            var categories = _categoryRepository.GetAll().Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();
+            var categories = _categoryRepository.GetAll()
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Title,
+                    Value = x.Id.ToString()
+                }).OrderBy(xx => xx.Text).ToList();
+
             return categories;
         }
     }

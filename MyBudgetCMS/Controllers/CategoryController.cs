@@ -70,7 +70,7 @@ namespace MyBudgetCMS.Controllers
                 {
                     ViewBag.Parents = LoadParents();
                     ViewBag.TypesOfPayments = LoadTypesOfPayments();
-                    ModelState.AddModelError("CustomError", "קטגורעה כבר קיימת");
+                    ModelState.AddModelError("CustomError", "קטגוריה כבר קיימת");
                     return View(model);
                 }
 
@@ -186,13 +186,26 @@ namespace MyBudgetCMS.Controllers
 
         private List<SelectListItem> LoadTypesOfPayments()
         {
-            var typesOfPayments = _typeOfPaymentRepository.GetAll().Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();
+            var typesOfPayments = _typeOfPaymentRepository.GetAll()
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Title,
+                    Value = x.Id.ToString()
+                }).OrderBy(xx => xx.Text).ToList();
+
             return typesOfPayments;
         }
 
         private List<SelectListItem> LoadParents()
         {
-            var parents = _categoryRepository.GetAll().Where(xx => xx.ParentID == null).Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();
+            var parents = _categoryRepository.GetAll()
+                .Where(xx => xx.ParentID == null)
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Title,
+                    Value = x.Id.ToString()
+                }).OrderBy(xx => xx.Text).ToList();
+
             return parents;
         }
     }

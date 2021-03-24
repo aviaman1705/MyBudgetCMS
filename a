@@ -1,0 +1,629 @@
+[1mdiff --git a/.vs/MyBudgetCMS/v16/.suo b/.vs/MyBudgetCMS/v16/.suo[m
+[1mindex 862b7ce..2acc6dc 100644[m
+Binary files a/.vs/MyBudgetCMS/v16/.suo and b/.vs/MyBudgetCMS/v16/.suo differ
+[1mdiff --git a/MyBudgetCMS/Controllers/AccountController.cs b/MyBudgetCMS/Controllers/AccountController.cs[m
+[1mindex df6f029..198b6e4 100644[m
+[1m--- a/MyBudgetCMS/Controllers/AccountController.cs[m
+[1m+++ b/MyBudgetCMS/Controllers/AccountController.cs[m
+[36m@@ -4,9 +4,7 @@[m [musing MyBudgetCMS.Models.Dto;[m
+ using MyBudgetCMS.Models.Entities;[m
+ using NLog;[m
+ using System;[m
+[31m-using System.Collections.Generic;[m
+ using System.Linq;[m
+[31m-using System.Web;[m
+ using System.Web.Mvc;[m
+ using System.Web.Security;[m
+ [m
+[1mdiff --git a/MyBudgetCMS/Controllers/CategoryController.cs b/MyBudgetCMS/Controllers/CategoryController.cs[m
+[1mindex 9d0ccde..7b5888f 100644[m
+[1m--- a/MyBudgetCMS/Controllers/CategoryController.cs[m
+[1m+++ b/MyBudgetCMS/Controllers/CategoryController.cs[m
+[36m@@ -70,7 +70,7 @@[m [mnamespace MyBudgetCMS.Controllers[m
+                 {[m
+                     ViewBag.Parents = LoadParents();[m
+                     ViewBag.TypesOfPayments = LoadTypesOfPayments();[m
+[31m-                    ModelState.AddModelError("CustomError", "קטגורעה כבר קיימת");[m
+[32m+[m[32m                    ModelState.AddModelError("CustomError", "קטגוריה כבר קיימת");[m
+                     return View(model);[m
+                 }[m
+ [m
+[36m@@ -186,13 +186,26 @@[m [mnamespace MyBudgetCMS.Controllers[m
+ [m
+         private List<SelectListItem> LoadTypesOfPayments()[m
+         {[m
+[31m-            var typesOfPayments = _typeOfPaymentRepository.GetAll().Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m[32m            var typesOfPayments = _typeOfPaymentRepository.GetAll()[m
+[32m+[m[32m                .Select(x => new SelectListItem()[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Text = x.Title,[m
+[32m+[m[32m                    Value = x.Id.ToString()[m
+[32m+[m[32m                }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m
+             return typesOfPayments;[m
+         }[m
+ [m
+         private List<SelectListItem> LoadParents()[m
+         {[m
+[31m-            var parents = _categoryRepository.GetAll().Where(xx => xx.ParentID == null).Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m[32m            var parents = _categoryRepository.GetAll()[m
+[32m+[m[32m                .Where(xx => xx.ParentID == null)[m
+[32m+[m[32m                .Select(x => new SelectListItem()[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Text = x.Title,[m
+[32m+[m[32m                    Value = x.Id.ToString()[m
+[32m+[m[32m                }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m
+             return parents;[m
+         }[m
+     }[m
+[1mdiff --git a/MyBudgetCMS/Controllers/MonthlyBudgetController.cs b/MyBudgetCMS/Controllers/MonthlyBudgetController.cs[m
+[1mindex d1c7241..00b843e 100644[m
+[1m--- a/MyBudgetCMS/Controllers/MonthlyBudgetController.cs[m
+[1m+++ b/MyBudgetCMS/Controllers/MonthlyBudgetController.cs[m
+[36m@@ -48,14 +48,6 @@[m [mnamespace MyBudgetCMS.Controllers[m
+                     return View(model);[m
+                 }[m
+ [m
+[31m-                var dateTime = model.Date;[m
+[31m-[m
+[31m-                //if (_monthlyBudgetRepository.GetAll().Any(x => x.Date.Year == dateTime.Year && x.Date.Month == dateTime.Month))[m
+[31m-                //{[m
+[31m-                //    ModelState.AddModelError("CustomError", "תקציב לחודש הנ''ל כבר קיים.");[m
+[31m-                //    return View(model);[m
+[31m-                //}[m
+[31m-[m
+                 MonthlyBudget dto = Mapper.Map<MonthlyBudget>(model);[m
+                 _monthlyBudgetRepository.Add(dto);[m
+ [m
+[36m@@ -108,14 +100,6 @@[m [mnamespace MyBudgetCMS.Controllers[m
+                     return View(model);[m
+                 }[m
+ [m
+[31m-                var dateTime = model.Date;[m
+[31m-                //Make sure title and slug are unique[m
+[31m-                //if (_monthlyBudgetRepository.GetAll().Where(x => x.Id != model.Id).Any(x => x.Date.Year == dateTime.Year && x.Date.Month == dateTime.Month))[m
+[31m-                //{[m
+[31m-                //    ModelState.AddModelError("CustomError", "תקציב לחודש הנ''ל כבר קיים.");[m
+[31m-                //    return View(model);[m
+[31m-                //}[m
+[31m-[m
+                 //Get the entity[m
+                 MonthlyBudget dto = _monthlyBudgetRepository.Get(model.Id);[m
+                 if (dto == null)[m
+[1mdiff --git a/MyBudgetCMS/Controllers/PaymentPerMonthController.cs b/MyBudgetCMS/Controllers/PaymentPerMonthController.cs[m
+[1mindex 3532644..2fd99fd 100644[m
+[1m--- a/MyBudgetCMS/Controllers/PaymentPerMonthController.cs[m
+[1m+++ b/MyBudgetCMS/Controllers/PaymentPerMonthController.cs[m
+[36m@@ -72,7 +72,7 @@[m [mnamespace MyBudgetCMS.Controllers[m
+                     return View(model);[m
+                 }[m
+ [m
+[31m-                PaymentPerMonth dto = Mapper.Map<PaymentPerMonth>(model);                [m
+[32m+[m[32m                PaymentPerMonth dto = Mapper.Map<PaymentPerMonth>(model);[m
+                 _paymentPerMonthRepository.Add(dto);[m
+ [m
+                 return RedirectToAction("Index");[m
+[36m@@ -137,11 +137,8 @@[m [mnamespace MyBudgetCMS.Controllers[m
+                     return Content("תקציב לא קיים");[m
+                 }[m
+                 else[m
+[31m-                {                    [m
+[31m-                    dto.Id = model.Id;                 [m
+[31m-                    dto.Sum = model.Sum;[m
+[31m-                    dto.CategoryID = model.CategoryID;[m
+[31m-                    dto.ActionDate = model.ActionDate;                    [m
+[32m+[m[32m                {[m
+[32m+[m[32m                    dto = Mapper.Map<PaymentPerMonth>(model);[m
+ [m
+                     //Update dto entity[m
+                     _paymentPerMonthRepository.Update(dto);[m
+[36m@@ -181,13 +178,25 @@[m [mnamespace MyBudgetCMS.Controllers[m
+ [m
+         private List<SelectListItem> LoadBudgets()[m
+         {[m
+[31m-            var budgets = _monthlyBudgetRepository.GetAll().Select(x => new SelectListItem() { Text = x.Date.ToString(), Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m[32m            var budgets = _monthlyBudgetRepository.GetAll()[m
+[32m+[m[32m                .Select(x => new SelectListItem()[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Text = x.Date.ToString(),[m
+[32m+[m[32m                    Value = x.Id.ToString()[m
+[32m+[m[32m                }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m
+             return budgets;[m
+         }[m
+ [m
+         private List<SelectListItem> LoadCategories()[m
+         {[m
+[31m-            var categories = _categoryRepository.GetAll().Select(x => new SelectListItem() { Text = x.Title, Value = x.Id.ToString() }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m[32m            var categories = _categoryRepository.GetAll()[m
+[32m+[m[32m                .Select(x => new SelectListItem()[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Text = x.Title,[m
+[32m+[m[32m                    Value = x.Id.ToString()[m
+[32m+[m[32m                }).OrderBy(xx => xx.Text).ToList();[m
+[32m+[m
+             return categories;[m
+         }[m
+     }[m
+[1mdiff --git a/MyBudgetCMS/Controllers/api/DashboardController.cs b/MyBudgetCMS/Controllers/api/DashboardController.cs[m
+[1mindex c998f27..8804396 100644[m
+[1m--- a/MyBudgetCMS/Controllers/api/DashboardController.cs[m
+[1m+++ b/MyBudgetCMS/Controllers/api/DashboardController.cs[m
+[36m@@ -24,23 +24,23 @@[m [mnamespace MyBudgetCMS.Controllers.api[m
+             _dashboardRepository = dashboardRepository;[m
+         }[m
+ [m
+[31m-        public IHttpActionResult GetData()[m
+[31m-        {[m
+[31m-            try[m
+[31m-            {[m
+[31m-                var model = Mapper.Map<DashboardDto>(_dashboardRepository.GetDashboardData());[m
+[31m-                if (model != null)[m
+[31m-                    return Ok(model);[m
+[31m-                else[m
+[31m-                    return NotFound();[m
+[31m-            }[m
+[31m-            catch (Exception ex)[m
+[31m-            {[m
+[31m-                logger.Error($"Index() {DateTime.Now}");[m
+[31m-                logger.Error(ex.Message);[m
+[31m-                logger.Error("==============================");[m
+[31m-                return InternalServerError();[m
+[31m-            }[m
+[31m-        }[m
+[32m+[m[32m        //public IHttpActionResult GetData()[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    try[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        var model = Mapper.Map<DashboardDto>(_dashboardRepository.GetDashboardData());[m
+[32m+[m[32m        //        if (model != null)[m
+[32m+[m[32m        //            return Ok(model);[m
+[32m+[m[32m        //        else[m
+[32m+[m[32m        //            return NotFound();[m
+[32m+[m[32m        //    }[m
+[32m+[m[32m        //    catch (Exception ex)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        logger.Error($"Index() {DateTime.Now}");[m
+[32m+[m[32m        //        logger.Error(ex.Message);[m
+[32m+[m[32m        //        logger.Error("==============================");[m
+[32m+[m[32m        //        return InternalServerError();[m
+[32m+[m[32m        //    }[m
+[32m+[m[32m        //}[m
+     }[m
+ }[m
+[1mdiff --git a/MyBudgetCMS/Infrastructure/AutomappWebProfile.cs b/MyBudgetCMS/Infrastructure/AutomappWebProfile.cs[m
+[1mindex f8c6891..b69de72 100644[m
+[1m--- a/MyBudgetCMS/Infrastructure/AutomappWebProfile.cs[m
+[1m+++ b/MyBudgetCMS/Infrastructure/AutomappWebProfile.cs[m
+[36m@@ -12,30 +12,21 @@[m [mnamespace MyBudgetCMS.Infrastructure[m
+     {[m
+         public AutomappWebProfile()[m
+         {[m
+[31m-            CreateMap<Dashboard, DashboardDto>()[m
+[31m-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.GetDate()));[m
+[31m-[m
+[31m-            CreateMap<ExpenseDashboardItem, ExpenseDashboardItemDto>();[m
+[31m-[m
+             //MonthlyBudget[m
+[31m-            CreateMap<MonthlyBudgetDto, MonthlyBudget>();[m
+[31m-[m
+             CreateMap<MonthlyBudget, MonthlyBudgetGridItemDto>()[m
+[31m-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))[m
+[31m-            .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))[m
+[31m-            .ForMember(dest => dest.ShortDesc, opt => opt.MapFrom(src => src.ShortDesc))            [m
+             .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.ShortDate()));[m
+ [m
+[31m-            CreateMap<MonthlyBudgetDto, MonthlyBudget>();[m
+[31m-[m
+             //PaymentPerMonth[m
+[31m-            CreateMap<PaymentPerMonth, AddPaymentPerMonthDto>();[m
+[32m+[m[32m            CreateMap<EditPaymentPerMonthDto, PaymentPerMonth>()[m
+[32m+[m[32m                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))[m
+[32m+[m[32m                .ForMember(dest => dest.ActionDate, opt => opt.MapFrom(src => src.ActionDate))[m
+[32m+[m[32m                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))[m
+[32m+[m[32m                .ForMember(dest => dest.Sum, opt => opt.MapFrom(src => src.Sum));[m
+             CreateMap<AddPaymentPerMonthDto, PaymentPerMonth>();[m
+             CreateMap<PaymentPerMonth, PaymentGridItemDto>()[m
+                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))[m
+                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.ActionDate))[m
+[31m-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Title))[m
+[31m-                .ForMember(dest => dest.Sum, opt => opt.MapFrom(src => src.Sum));[m
+[32m+[m[32m                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Title));[m
+ [m
+             //Category[m
+             CreateMap<Category, CategoryGridItemDto>()[m
+[36m@@ -43,13 +34,12 @@[m [mnamespace MyBudgetCMS.Infrastructure[m
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))[m
+                .ForMember(dest => dest.TypeOfPaymentName, opt => opt.MapFrom(src => src.TypeOfPayment.Title))[m
+                .ForMember(dest => dest.PaymentPerMonthsCount, opt => opt.MapFrom(src => src.PaymentPerMonths.Count()))[m
+[31m-               .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Title));[m
+[31m-            CreateMap<CategorySpentItem, CategorySpentItemDto>();[m
+[32m+[m[32m               .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Title));[m[41m            [m
+[32m+[m[32m            CreateMap<AddCategoryDto, Category>();[m[41m            [m
+[32m+[m[32m            CreateMap<EditCategoryDto, Category>();[m[41m            [m
+ [m
+[31m-            CreateMap<AddCategoryDto, Category>();[m
+[31m-            CreateMap<Category, AddCategoryDto>();[m
+[31m-            CreateMap<EditCategoryDto, Category>();[m
+[31m-            CreateMap<Category, EditCategoryDto>();[m
+[32m+[m[32m            //User[m
+[32m+[m[32m            CreateMap<UserNavPartialDto, User>();[m
+         }[m
+ [m
+         public static void Run()[m
+[1mdiff --git a/MyBudgetCMS/Logs/2021-03-24.log b/MyBudgetCMS/Logs/2021-03-24.log[m
+[1mindex 39f7ba3..9893b6e 100644[m
+[1m--- a/MyBudgetCMS/Logs/2021-03-24.log[m
+[1m+++ b/MyBudgetCMS/Logs/2021-03-24.log[m
+[36m@@ -1,250 +1,99 @@[m
+[31m-2021-03-24 14:09:18.1345 ERROR    - MonthlyBudgetController - GetData() 24/03/2021 14:09:18 [m
+[31m-2021-03-24 14:09:18.1714 ERROR    - MonthlyBudgetController - System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57 System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57[m
+[31m-2021-03-24 14:09:18.2041 ERROR    - MonthlyBudgetController - ============================== [m
+[31m-2021-03-24 14:09:25.9656 ERROR    - MonthlyBudgetController - GetData() 24/03/2021 14:09:25 [m
+[31m-2021-03-24 14:09:25.9656 ERROR    - MonthlyBudgetController - System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57 System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57[m
+[31m-2021-03-24 14:09:25.9656 ERROR    - MonthlyBudgetController - ============================== [m
+[31m-2021-03-24 14:09:29.9890 ERROR    - MonthlyBudgetController - GetData() 24/03/2021 14:09:29 [m
+[31m-2021-03-24 14:09:29.9890 ERROR    - MonthlyBudgetController - System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57 System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57[m
+[31m-2021-03-24 14:09:29.9890 ERROR    - MonthlyBudgetController - ============================== [m
+[31m-2021-03-24 14:10:23.8943 ERROR    - MonthlyBudgetController - GetData() 24/03/2021 14:10:23 [m
+[31m-2021-03-24 14:10:23.9252 ERROR    - MonthlyBudgetController - System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[32m+[m[32m2021-03-24 20:30:25.7362 ERROR    - CategoryController - GetData() 24/03/2021 20:30:25[m[41m [m
+[32m+[m[32m2021-03-24 20:30:25.7971 ERROR    - CategoryController - AutoMapper.AutoMapperMappingException: Error mapping types.[m
+[32m+[m
+[32m+[m[32mMapping types:[m
+[32m+[m[32mList`1 -> List`1[m
+[32m+[m[32mSystem.Collections.Generic.List`1[[MyBudgetCMS.Models.Entities.Category, MyBudgetCMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] -> System.Collections.Generic.List`1[[MyBudgetCMS.Models.Dto.CategoryGridItemDto, MyBudgetCMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] ---> AutoMapper.AutoMapperConfigurationException:[m[41m [m
+[32m+[m[32mUnmapped members were found. Review the types and members below.[m
+[32m+[m[32mAdd a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type[m
+[32m+[m[32mFor no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters[m
+[32m+[m[32m===================================================================================[m
+[32m+[m[32mAutoMapper created this type map for you, but your types cannot be mapped using the current configuration.[m
+[32m+[m[32mCategory -> CategoryGridItemDto (Destination member list)[m
+[32m+[m[32mMyBudgetCMS.Models.Entities.Category -> MyBudgetCMS.Models.Dto.CategoryGridItemDto (Destination member list)[m
+[32m+[m
+[32m+[m[32mUnmapped properties:[m
+[32m+[m[32mParentName[m
+[32m+[m[32mTypeOfPaymentName[m
+[32m+[m
+[32m+[m[32m   at AutoMapper.ConfigurationValidator.AssertConfigurationIsValid(IEnumerable`1 typeMaps) in C:\projects\automapper\src\AutoMapper\ConfigurationValidator.cs:line 48[m
+[32m+[m[32m   at lambda_method(Closure , List`1 , List`1 , ResolutionContext )[m
+    --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57 System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Invalid column name 'MonthlyBudget_Id'.[m
+[31m-Invalid column name 'MonthlyBudget_Id'.[m
+[31m-   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)[m
+[31m-   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)[m
+[31m-   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)[m
+[31m-   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()[m
+[31m-   at System.Data.SqlClient.SqlDataReader.get_MetaData()[m
+[31m-   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)[m
+[31m-   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)[m
+[31m-   at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)[m
+[31m-   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.Reader(DbCommand command, DbCommandInterceptionContext interceptionContext)[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[32m+[m[32m   at lambda_method(Closure , List`1 , List`1 , ResolutionContext )[m
+[32m+[m[32m   at lambda_method(Closure , Object , Object , ResolutionContext )[m
+[32m+[m[32m   at AutoMapper.Mapper.AutoMapper.IMapper.Map[TDestination](Object source) in C:\projects\automapper\src\AutoMapper\Mapper.cs:line 211[m
+[32m+[m[32m   at MyBudgetCMS.Controllers.Api.CategoryController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\CategoryController.cs:line 59 AutoMapper.AutoMapperMappingException: Error mapping types.[m
+[32m+[m
+[32m+[m[32mMapping types:[m
+[32m+[m[32mList`1 -> List`1[m
+[32m+[m[32mSystem.Collections.Generic.List`1[[MyBudgetCMS.Models.Entities.Category, MyBudgetCMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] -> System.Collections.Generic.List`1[[MyBudgetCMS.Models.Dto.CategoryGridItemDto, MyBudgetCMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] ---> AutoMapper.AutoMapperConfigurationException:[m[41m [m
+[32m+[m[32mUnmapped members were found. Review the types and members below.[m
+[32m+[m[32mAdd a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type[m
+[32m+[m[32mFor no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters[m
+[32m+[m[32m===================================================================================[m
+[32m+[m[32mAutoMapper created this type map for you, but your types cannot be mapped using the current configuration.[m
+[32m+[m[32mCategory -> CategoryGridItemDto (Destination member list)[m
+[32m+[m[32mMyBudgetCMS.Models.Entities.Category -> MyBudgetCMS.Models.Dto.CategoryGridItemDto (Destination member list)[m
+[32m+[m
+[32m+[m[32mUnmapped properties:[m
+[32m+[m[32mParentName[m
+[32m+[m[32mTypeOfPaymentName[m
+[32m+[m
+[32m+[m[32m   at AutoMapper.ConfigurationValidator.AssertConfigurationIsValid(IEnumerable`1 typeMaps) in C:\projects\automapper\src\AutoMapper\ConfigurationValidator.cs:line 48[m
+[32m+[m[32m   at lambda_method(Closure , List`1 , List`1 , ResolutionContext )[m
+    --- End of inner exception stack trace ---[m
+[31m-   at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)[m
+[31m-   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass41_0.<GetResults>b__0()[m
+[31m-   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)[m
+[31m-   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__31_0()[m
+[31m-   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()[m
+[31m-   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)[m
+[31m-   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)[m
+[31m-   at MyBudgetCMS.Controllers.api.MonthlyBudgetController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\MonthlyBudgetController.cs:line 57[m
+[31m-2021-03-24 14:10:23.9491 ERROR    - MonthlyBudgetController - ============================== [m
+[31m-2021-03-24 14:48:05.5182 ERROR    - PaymentPerMonthController - EditMonthlyBudget() 24/03/2021 14:48:05 [m
+[31m-2021-03-24 14:48:05.5811 ERROR    - PaymentPerMonthController - [m
+[32m+[m[32m   at lambda_method(Closure , List`1 , List`1 , ResolutionContext )[m
+[32m+[m[32m   at lambda_method(Closure , Object , Object , ResolutionContext )[m
+[32m+[m[32m   at AutoMapper.Mapper.AutoMapper.IMapper.Map[TDestination](Object source) in C:\projects\automapper\src\AutoMapper\Mapper.cs:line 211[m
+[32m+[m[32m   at MyBudgetCMS.Controllers.Api.CategoryController.GetData(String sEcho, String sSearch, Int32 iDisplayStart, Int32 iDisplayLength, String iSortCol_0, String sSortDir_0) in C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\Controllers\api\CategoryController.cs:line 59[m
+[32m+[m[32m2021-03-24 20:30:25.8798 ERROR    - CategoryController - ==============================[m[41m [m
+[32m+[m[32m2021-03-24 20:31:19.5818 ERROR    - CategoryController - AddCategory() 24/03/2021 20:31:19[m[41m [m
+[32m+[m[32m2021-03-24 20:31:19.6127 ERROR    - CategoryController -[m[41m [m
+[32m+[m[32mUnmapped members were found. Review the types and members below.[m
+[32m+[m[32mAdd a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type[m
+[32m+[m[32mFor no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters[m
+[32m+[m[32m==============================================================================[m
+[32m+[m[32mAutoMapper created this type map for you, but your types cannot be mapped using the current configuration.[m
+[32m+[m[32mAddCategoryDto -> Category (Destination member list)[m
+[32m+[m[32mMyBudgetCMS.Models.Dto.AddCategoryDto -> MyBudgetCMS.Models.Entities.Category (Destination member list)[m
+[32m+[m
+[32m+[m[32mUnmapped properties:[m
+[32m+[m[32mId[m
+[32m+[m[32mParent[m
+[32m+[m[32mTypeOfPayment[m
+[32m+[m[32mPaymentPerMonths[m
+[32m+[m[41m [m
+[32m+[m[32m2021-03-24 20:31:19.6127 ERROR    - CategoryController - ==============================[m[41m [m
+[32m+[m[32m2021-03-24 20:31:42.4971 ERROR    - CategoryController - AddCategory() 24/03/2021 20:31:42[m[41m [m
+[32m+[m[32m2021-03-24 20:31:42.5600 ERROR    - CategoryController -[m[41m [m
+ Unmapped members were found. Review the types and members below.[m
+ Add a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type[m
+ For no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters[m
+[31m-=============================================================================================[m
+[32m+[m[32m==============================================================================[m
+ AutoMapper created this type map for you, but your types cannot be mapped using the current configuration.[m
+[31m-EditPaymentPerMonthDto -> PaymentPerMonth (Destination member list)[m
+[31m-MyBudgetCMS.Models.Dto.EditPaymentPerMonthDto -> MyBudgetCMS.Models.Entities.PaymentPerMonth (Destination member list)[m
+[32m+[m[32mAddCategoryDto -> Category (Destination member list)[m
+[32m+[m[32mMyBudgetCMS.Models.Dto.AddCategoryDto -> MyBudgetCMS.Models.Entities.Category (Destination member list)[m
+ [m
+ Unmapped properties:[m
+[31m-Category[m
+[31m-CreatedDate[m
+[32m+[m[32mId[m
+[32m+[m[32mParent[m
+[32m+[m[32mTypeOfPayment[m
+[32m+[m[32mPaymentPerMonths[m
+  [m
+[31m-2021-03-24 14:48:05.5811 ERROR    - PaymentPerMonthController - ============================== [m
+[31m-2021-03-24 14:49:35.6985 ERROR    - PaymentPerMonthController - EditMonthlyBudget() 24/03/2021 14:49:35 [m
+[31m-2021-03-24 14:49:35.6985 ERROR    - PaymentPerMonthController - [m
+[32m+[m[32m2021-03-24 20:31:42.5600 ERROR    - CategoryController - ==============================[m[41m [m
+[32m+[m[32m2021-03-24 20:32:58.5218 ERROR    - CategoryController - EditSentence() 24/03/2021 20:32:58[m[41m [m
+[32m+[m[32m2021-03-24 20:32:58.5527 ERROR    - CategoryController -[m[41m [m
+ Unmapped members were found. Review the types and members below.[m
+ Add a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type[m
+ For no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters[m
+[31m-=============================================================================================[m
+[32m+[m[32m===============================================================================[m
+ AutoMapper created this type map for you, but your types cannot be mapped using the current configuration.[m
+[31m-EditPaymentPerMonthDto -> PaymentPerMonth (Destination member list)[m
+[31m-MyBudgetCMS.Models.Dto.EditPaymentPerMonthDto -> MyBudgetCMS.Models.Entities.PaymentPerMonth (Destination member list)[m
+[32m+[m[32mEditCategoryDto -> Category (Destination member list)[m
+[32m+[m[32mMyBudgetCMS.Models.Dto.EditCategoryDto -> MyBudgetCMS.Models.Entities.Category (Destination member list)[m
+ [m
+ Unmapped properties:[m
+[31m-Category[m
+[31m-CreatedDate[m
+[32m+[m[32mParent[m
+[32m+[m[32mTypeOfPayment[m
+[32m+[m[32mPaymentPerMonths[m
+  [m
+[31m-2021-03-24 14:49:35.6985 ERROR    - PaymentPerMonthController - ============================== [m
+[32m+[m[32m2021-03-24 20:32:58.5527 ERROR    - CategoryController - ==============================[m[41m [m
+[1mdiff --git a/MyBudgetCMS/Models/Dto/ExpenseDashboardItemDto.cs b/MyBudgetCMS/Models/Dto/ExpenseDashboardItemDto.cs[m
+[1mindex 20f6e2a..1a0e3ba 100644[m
+[1m--- a/MyBudgetCMS/Models/Dto/ExpenseDashboardItemDto.cs[m
+[1m+++ b/MyBudgetCMS/Models/Dto/ExpenseDashboardItemDto.cs[m
+[36m@@ -7,7 +7,7 @@[m [mnamespace MyBudgetCMS.Models.Dto[m
+ {[m
+     public class ExpenseDashboardItemDto[m
+     {[m
+[31m-        public int Id { get; set; }[m
+[32m+[m[32m        //public int Id { get; set; }[m
+         public string Title { get; set; }[m
+         public double Sum { get; set; }[m
+     }[m
+[1mdiff --git a/MyBudgetCMS/MyBudgetCMS.csproj b/MyBudgetCMS/MyBudgetCMS.csproj[m
+[1mindex 7dec00d..c317f06 100644[m
+[1m--- a/MyBudgetCMS/MyBudgetCMS.csproj[m
+[1m+++ b/MyBudgetCMS/MyBudgetCMS.csproj[m
+[36m@@ -619,6 +619,7 @@[m
+     <Content Include="fonts\glyphicons-halflings-regular.svg" />[m
+     <Content Include="Global.asax" />[m
+     <Content Include="Content\Site.css" />[m
+[32m+[m[32m    <Content Include="HtmlPage1.html" />[m
+     <Content Include="Images\2 %281%29.gif" />[m
+     <Content Include="Images\ajax-loader.gif" />[m
+     <Content Include="Images\AjaxLoader.gif" />[m
+[1mdiff --git a/MyBudgetCMS/bin/MyBudgetCMS.dll b/MyBudgetCMS/bin/MyBudgetCMS.dll[m
+[1mindex 1a7d8fb..f942777 100644[m
+Binary files a/MyBudgetCMS/bin/MyBudgetCMS.dll and b/MyBudgetCMS/bin/MyBudgetCMS.dll differ
+[1mdiff --git a/MyBudgetCMS/bin/MyBudgetCMS.pdb b/MyBudgetCMS/bin/MyBudgetCMS.pdb[m
+[1mindex e518b0a..678fdeb 100644[m
+Binary files a/MyBudgetCMS/bin/MyBudgetCMS.pdb and b/MyBudgetCMS/bin/MyBudgetCMS.pdb differ
+[1mdiff --git a/MyBudgetCMS/obj/Debug/MyBudgetCMS.dll b/MyBudgetCMS/obj/Debug/MyBudgetCMS.dll[m
+[1mindex 1a7d8fb..f942777 100644[m
+Binary files a/MyBudgetCMS/obj/Debug/MyBudgetCMS.dll and b/MyBudgetCMS/obj/Debug/MyBudgetCMS.dll differ
+[1mdiff --git a/MyBudgetCMS/obj/Debug/MyBudgetCMS.pdb b/MyBudgetCMS/obj/Debug/MyBudgetCMS.pdb[m
+[1mindex e518b0a..678fdeb 100644[m
+Binary files a/MyBudgetCMS/obj/Debug/MyBudgetCMS.pdb and b/MyBudgetCMS/obj/Debug/MyBudgetCMS.pdb differ
