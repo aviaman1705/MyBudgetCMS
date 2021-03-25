@@ -14,6 +14,8 @@ namespace MyBudgetCMS.Services
 
         public List<Search> Search(string searchStr)
         {
+            searchStr = !string.IsNullOrEmpty(searchStr) ? searchStr : "";
+
             var searchStrParameter = new SqlParameter("@SearchStr", searchStr);
             var result = context.Database.SqlQuery<Search>("Search @SearchStr", searchStrParameter).ToList();
             return result;
