@@ -116,3 +116,4 @@ C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\bin\System.Web.Http.Cors.xml
 C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\obj\Debug\MyBudgetCMS.Migrations.addshortdesctomonthlybudgettable.resources
 C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\obj\Debug\MyBudgetCMS.Migrations.RemoveRealenseshipbetweenmontlbudgetandpaymentpermethoud.resources
 C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\obj\Debug\MyBudgetCMS.Migrations.Addactiontypeculmanforpaymentpermethoudtable.resources
+C:\Users\aviam\source\repos\MyBudgetCMS\MyBudgetCMS\obj\Debug\MyBudgetCMS.csprojAssemblyReference.cache

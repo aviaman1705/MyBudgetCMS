@@ -1,9 +1,14 @@
-﻿@model IEnumerable<MyBudgetCMS.Models.Dto.CategoryGridItemDto>
+﻿@using System.Web.Optimization
+@using System.Configuration;
+
+@model IEnumerable<MyBudgetCMS.Models.Dto.CategoryGridItemDto>
 
 @{
     ViewBag.Title = "קטגוריות";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var domain = ConfigurationManager.AppSettings["Domain"];
 }
+
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 
 <div class="row">
@@ -48,7 +53,7 @@
 </div>
 
 @section Scripts{
-    
+
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 
     <script>
@@ -58,7 +63,7 @@
 
             $("#dataTable").dataTable({
                 "bServerSide": true, //make server side processing to true
-                "sAjaxSource": '/MyBudgetCMS/api/Category/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxSource": '@domain' + "api/Category/GetData", //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
                 "bProcessing": true,
                 "bLengthChange": false,
@@ -89,7 +94,7 @@
                     "sSearch": "חפש",
                     "lengthMenu": "Display _MENU_ records per page",
                     "zeroRecords": "מצטערים אין תוצאות",
-                    "info": "מציג עמוד _PAGE_ מתוך _PAGES_",                   
+                    "info": "מציג עמוד _PAGE_ מתוך _PAGES_",
                     "infoEmpty": "No records available",
                     "infoFiltered": "(filtered from _MAX_ total records)",
                     "processing": "טוען",

@@ -12,12 +12,12 @@ namespace MyBudgetCMS
             // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
 
             //Render admin area css files
-            bundles.Add(new StyleBundle("~/bundles/admin/css").Include(
-                                                        "~/Content/bootstrap.min.css",
-                                                        "~/Content/font-awesome.min.css",
-                                                        "~/Content/dataTables.bootstrap4.css",
-                                                        "~/Content/sb-admin.css"
-                                                        ));
+            //bundles.Add(new StyleBundle("~/bundles/admin/css").Include(
+            //                                            "~/Content/bootstrap.css",
+            //                                            "~/Content/font-awesome.min.css",
+            //                                            "~/Content/dataTables.bootstrap4.css",
+            //                                            "~/Content/sb-admin.css"
+            //                                            ));
 
             //Render modernizr scripts
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include("~/Scripts/modernizr-*"));

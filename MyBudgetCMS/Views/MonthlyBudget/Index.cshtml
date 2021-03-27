@@ -1,7 +1,11 @@
-﻿@model MyBudgetCMS.Models.Dto.MonthlyBudgetGridDto
+﻿@using System.Web.Optimization
+@using System.Configuration;
+
+@model MyBudgetCMS.Models.Dto.MonthlyBudgetGridDto
 @{
     ViewBag.Title = "הכנסות";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var domain = ConfigurationManager.AppSettings["Domain"];
 }
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 
@@ -58,7 +62,7 @@
 
             $("#dataTable").dataTable({
                 "bServerSide": true, //make server side processing to true
-                "sAjaxSource": '/MyBudgetCMS/api/MonthlyBudget/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxSource": '@domain' + 'api/MonthlyBudget/GetData', //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
                 "bProcessing": true,
                 "bLengthChange": false,

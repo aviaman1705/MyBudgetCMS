@@ -1,7 +1,11 @@
-﻿
+﻿using System.Web.Optimization
+@using System.Configuration;
+
 @{
     ViewBag.Title = "תוצאות חיפוש";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var domain = ConfigurationManager.AppSettings["Domain"];
 }
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 
@@ -48,7 +52,7 @@
             $("#dataTable").dataTable({
                 "oSearch": { "sSearch": '@ViewBag.SearchStr' },
                 "bServerSide": true, //make server side processing to true
-                "sAjaxSource": '/MyBudgetCMS/api/Search/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxSource": '@domain' + 'api/Search/GetData', //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
                 "bProcessing": true,
                 "bLengthChange": false,

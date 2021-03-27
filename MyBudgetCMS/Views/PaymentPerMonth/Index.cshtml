@@ -1,8 +1,12 @@
-﻿@model MyBudgetCMS.Models.Dto.PaymentGridDto
+﻿@using System.Web.Optimization
+@using System.Configuration;
+
+@model MyBudgetCMS.Models.Dto.PaymentGridDto
 
 @{
     ViewBag.Title = "הוצאות";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var domain = ConfigurationManager.AppSettings["Domain"];
 }
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 
@@ -31,7 +35,7 @@
                         <thead class="theader">
                             <tr class="tr-header">
                                 <th class="th-header">מחיקה</th>
-                                <th class="th-header">עריכה</th>                                
+                                <th class="th-header">עריכה</th>
                                 <th class="th-header">תאריך</th>
                                 <th class="th-header">סכום</th>
                                 <th class="th-header">קטוגריה</th>
@@ -58,7 +62,7 @@
 
             $("#dataTable").dataTable({
                 "bServerSide": true, //make server side processing to true
-                "sAjaxSource": '/MyBudgetCMS/api/PaymentPerMonth/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxSource": '@domain' + 'api/PaymentPerMonth/GetData', //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
                 "bProcessing": true,
                 "bLengthChange": false,
@@ -84,7 +88,8 @@
                         "mData": "Date",
                         render: (data, type, row) => {
                             return `<span class='special-date'>${row.Date}</span>`;
-                        }},
+                        }
+                    },
                     { "mData": "Sum" },
                     { "mData": "CategoryName" },
                     { "mData": "Id" }

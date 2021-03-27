@@ -1,7 +1,11 @@
-﻿@model IEnumerable<MyBudgetCMS.Models.Dto.TypeOfPaymentDto>
+﻿@using System.Web.Optimization
+@using System.Configuration;
+
+@model IEnumerable<MyBudgetCMS.Models.Dto.TypeOfPaymentDto>
 @{
     ViewBag.Title = "סוגי תשלומים";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var domain = ConfigurationManager.AppSettings["Domain"];
 }
 
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -56,13 +60,13 @@
 
             $("#dataTable").dataTable({
                 "bServerSide": true, //make server side processing to true
-                "sAjaxSource": '/MyBudgetCMS/api/TypeOfPayment/GetData', //url of the Ajax source,i.e. web api method
+                "sAjaxSource": '@domain'+ 'api/TypeOfPayment/GetData', //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
                 "bProcessing": true,
                 "bLengthChange": false,
                 "sPaginationType": "full_numbers",//pagination type
                 "aoColumnDefs": [],
-                "aoColumns": [                  
+                "aoColumns": [
                     { "mData": "Code" },
                     { "mData": "Title" },
                     { "mData": "Id" }
