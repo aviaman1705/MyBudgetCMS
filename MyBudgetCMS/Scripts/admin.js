@@ -11,18 +11,4 @@
     $('#topBtn').on("click", function () {
         window.scrollTo(0, 0);
     });
-
-    $.ajax({
-        url: "/MyBudgetCMS/Admin/Search/Index",
-        type: "get", //send it through get method
-        data: {
-            searchStr: $('#main-search').val()
-        },
-        success: function (response) {
-            console.log(response);
-        },
-        error: function (xhr) {
-            console.log(xhr);
-        }
-    });
 });
