@@ -288,7 +288,6 @@
     <Compile Include="Validators\CustomDateValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\admin.min.css" />
     <Content Include="Content\blue-scheme.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -638,8 +637,31 @@
     <Content Include="Images\g0R5.gif" />
     <Content Include="Images\grabbing.png" />
     <Content Include="Images\icons\Anonimus.png" />
+    <Content Include="Images\icons\gfx\bl.png" />
+    <Content Include="Images\icons\gfx\black_cursor.png" />
+    <Content Include="Images\icons\gfx\black_pointer.png" />
+    <Content Include="Images\icons\gfx\br.png" />
+    <Content Include="Images\icons\gfx\colored\black_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\blue_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\brown_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\gray_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\green_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\orange_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\pink_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\purple_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\red_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\turquoise_r2m.png" />
+    <Content Include="Images\icons\gfx\colored\yellow_r2m.png" />
+    <Content Include="Images\icons\gfx\credits.txt" />
+    <Content Include="Images\icons\gfx\sprite.png" />
+    <Content Include="Images\icons\gfx\tl.png" />
+    <Content Include="Images\icons\gfx\tr.png" />
+    <Content Include="Images\icons\gfx\white_cursor.png" />
+    <Content Include="Images\icons\gfx\white_pointer.png" />
     <Content Include="Images\icons\logo-dark.png" />
     <Content Include="Images\icons\logo-white.png" />
+    <Content Include="Images\icons\sfx\male\en_digits.js" />
+    <Content Include="Images\icons\sfx\male\he_digits.js" />
     <Content Include="Images\includes\author.png" />
     <Content Include="Images\includes\blog.jpg" />
     <Content Include="Images\includes\blog1.jpg" />
@@ -1114,6 +1136,7 @@
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\nagishli.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
