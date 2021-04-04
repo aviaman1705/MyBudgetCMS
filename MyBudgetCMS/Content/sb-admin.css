@@ -3568,7 +3568,9 @@ p.desc-grid-item {
     }
 
     .copyright.text-center.my-auto {
-        padding: 0px 50px 0px 0px !important;
+        padding: 0 50px 0 0 !important;
+        position: relative;
+        right: 65px;
     }
 
     a#topBtn {

@@ -5,7 +5,8 @@
       "Content/bootstrap.min.css",
       "Content/font-awesome.min.css",
       "Content/dataTables.bootstrap4.css",
-      "Content/sb-admin.css"
+      "Content/sb-admin.css",
+      "Content/site.css"
     ]
   }
 ]

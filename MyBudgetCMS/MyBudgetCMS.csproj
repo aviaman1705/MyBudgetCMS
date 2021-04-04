@@ -298,6 +298,7 @@
     <Content Include="Content\contact.css" />
     <Content Include="Content\dataTables.bootstrap4.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\login.css" />
     <Content Include="Content\main.css" />
     <Content Include="Content\sb-admin.css" />
@@ -622,7 +623,7 @@
     <Content Include="fileman\Uploads\LICENSE.txt" />
     <Content Include="fileman\Uploads\roxy-fileman-logo.gif" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="Images\2 %281%29.gif" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\AjaxLoader.gif" />
@@ -1353,12 +1354,14 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets" Condition="Exists('..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
