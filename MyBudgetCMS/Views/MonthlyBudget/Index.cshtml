@@ -76,13 +76,15 @@
                     {
                         mData: '',
                         render: (data, type, row) => {
-                            if (row.PaymentsCount == 0)
+                            if (row.PaymentsCount == 0) {
                                 return `<a
                                 href='../Admin/MonthlyBudget/DeleteMonthlyBudget/${row.Id}'
                                 title="מחיקה"
-                                class="btn btn-sm btn-default">
+                                class="btn btn-sm btn-default"
+                                onclick='return confirm("${text}")'>
                                 <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
-                            </a>`
+                            </a>`;
+                            }
                             else
                                 return '';
                         }
@@ -91,8 +93,8 @@
                         mData: '',
                         render: (data, type, row) => {
                             return `<a
-                                href='../Admin/MonthlyBudget/EditMonthlyBudget/${row.Id}' 
-                                title="עריכה" 
+                                href='../Admin/MonthlyBudget/EditMonthlyBudget/${row.Id}'
+                                title="עריכה"
                                 class="btn btn-sm btn-default">
                                <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
                               </a>`;

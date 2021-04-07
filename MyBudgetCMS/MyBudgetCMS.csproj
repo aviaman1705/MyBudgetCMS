@@ -194,6 +194,7 @@
     <Compile Include="Controllers\api\TypeOfPaymentController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\MonthlyBudgetController.cs" />
     <Compile Include="Controllers\PaymentPerMonthController.cs" />
@@ -702,6 +703,8 @@
     <Content Include="Images\loader3.gif" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\Searchs_130.png" />
+    <Content Include="Images\sort_asc.png" />
+    <Content Include="Images\sort_both.png" />
     <Content Include="Images\status.gif" />
     <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -1221,6 +1224,7 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

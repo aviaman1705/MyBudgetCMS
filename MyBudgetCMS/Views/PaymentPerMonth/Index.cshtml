@@ -8,7 +8,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var domain = ConfigurationManager.AppSettings["Domain"];
 }
-<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
 
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12 title-section">
@@ -61,6 +61,7 @@
             var text = "האם אתה בטוח שברצונך למחוק את הפריט ?";
 
             $("#dataTable").dataTable({
+                "autoWidth": false,
                 "bServerSide": true, //make server side processing to true
                 "sAjaxSource": '@domain' + 'api/PaymentPerMonth/GetData', //url of the Ajax source,i.e. web api method
                 "sAjaxDataProp": "aaData", // data property of the returned ajax which contains table data
@@ -75,13 +76,24 @@
                     {
                         mData: '',
                         render: (data, type, row) => {
-                            return `<a href='../Admin/PaymentPerMonth/DeletePaymentPerMonth/${row.Id}' class='btn btn-danger' onclick='return confirm("${text}")'>מחיקה</a>`;
-                        }
+                            return `<a
+                                href='../Admin/PaymentPerMonth/DeletePaymentPerMonth/${row.Id}'
+                                title="מחיקה"
+                                class="btn btn-sm btn-default"
+                                onclick='return confirm("${text}")'>
+                                <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                            </a>`;
+                            }
                     },
                     {
                         mData: '',
                         render: (data, type, row) => {
-                            return `<a href='../Admin/PaymentPerMonth/EditPaymentPerMonth/${row.Id}' class='btn btn-info'>ערוך</a>`;
+                            return `<a
+                                href='../Admin/PaymentPerMonth/EditPaymentPerMonth/${row.Id}'
+                                title="עריכה"
+                                class="btn btn-sm btn-default">
+                               <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                              </a>`;                            
                         }
                     },
                     {
