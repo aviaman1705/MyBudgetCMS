@@ -90,6 +90,7 @@ namespace MyBudgetCMS.Controllers
 
         //GET:Admin/Category/EditCategory
         [HttpGet]
+        [OutputCache(Duration = 3600, VaryByParam = "ID")]
         public ActionResult EditCategory(int id)
         {
             try
@@ -106,6 +107,7 @@ namespace MyBudgetCMS.Controllers
 
                 ViewBag.Parents = LoadParents();
                 ViewBag.TypesOfPayments = LoadTypesOfPayments();
+
                 return View(model);
             }
             catch (Exception ex)
@@ -154,6 +156,13 @@ namespace MyBudgetCMS.Controllers
                     _categoryRepository.Update(dto);
                     ViewBag.TypesOfPayments = LoadTypesOfPayments();
                     ViewBag.Parents = LoadParents();
+
+                    //  Get the url for the action method:  
+                    var url = Url.Action("EditCategory", "Category", new { Id = model.Id });
+
+                    //  Remove the item from cache  
+                    Response.RemoveOutputCacheItem(url);
+
                     return View(model);
                 }
             }

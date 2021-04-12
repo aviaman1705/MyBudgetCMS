@@ -64,6 +64,7 @@ namespace MyBudgetCMS.Controllers
 
         //GET:Admin/MonthlyBudget/EditMonthlyBudget
         [HttpGet]
+        [OutputCache(Duration = 3600, VaryByParam = "ID")]
         public ActionResult EditMonthlyBudget(int id)
         {
             try
@@ -112,6 +113,12 @@ namespace MyBudgetCMS.Controllers
 
                     //Update dto entity
                     _monthlyBudgetRepository.Update(dto);
+
+                    //  Get the url for the action method:  
+                    var url = Url.Action("EditMonthlyBudget", "MonthlyBudget", new { Id = model.Id });
+
+                    //  Remove the item from cache  
+                    Response.RemoveOutputCacheItem(url);
 
                     return View(model);
                 }

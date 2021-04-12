@@ -88,6 +88,7 @@ namespace MyBudgetCMS.Controllers
 
         //GET:Admin/PaymentPerMonth/EditPaymentPerMonth
         [HttpGet]
+        [OutputCache(Duration = 3600, VaryByParam = "ID")]
         public ActionResult EditPaymentPerMonth(int id)
         {
             try
@@ -145,6 +146,12 @@ namespace MyBudgetCMS.Controllers
 
                     ViewBag.Budgets = LoadBudgets();
                     ViewBag.Categories = LoadCategories();
+
+                    //  Get the url for the action method:  
+                    var url = Url.Action("EditPaymentPerMonth", "PaymentPerMonth", new { Id = model.Id });
+
+                    //  Remove the item from cache  
+                    Response.RemoveOutputCacheItem(url);
 
                     return View(model);
                 }
