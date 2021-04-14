@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using NLog;
@@ -13,7 +14,7 @@ using System.Web.Http;
 
 namespace MyBudgetCMS.Controllers.Api
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class CategoryController : ApiController
     {
         private ICategoryRepository _categoryRepository;
@@ -23,7 +24,8 @@ namespace MyBudgetCMS.Controllers.Api
         {
             _categoryRepository = categoryRepository;
         }
-            
+
+        [CacheFilter(TimeDuration = 100)]
         public IHttpActionResult GetData(string sEcho, string sSearch, int iDisplayStart, int iDisplayLength, string iSortCol_0, string sSortDir_0)
         {
             try

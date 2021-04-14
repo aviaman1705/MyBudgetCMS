@@ -205,6 +205,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\AutomappWebProfile.cs" />
+    <Compile Include="Infrastructure\CacheFilter.cs" />
     <Compile Include="Interfaces\ICategoryRepository.cs" />
     <Compile Include="Interfaces\IMonthlyBudgetRepository.cs" />
     <Compile Include="Interfaces\IDashboardRepository.cs" />
