@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using NLog;
@@ -15,7 +16,7 @@ namespace MyBudgetCMS.Controllers.api
     public class PaymentPerMonthController : ApiController
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private IPaymentPerMonthRepository _paymentPerMonthRepository;        
+        private IPaymentPerMonthRepository _paymentPerMonthRepository;
 
         public PaymentPerMonthController(IPaymentPerMonthRepository paymentPerMonthRepository)
         {
@@ -32,19 +33,26 @@ namespace MyBudgetCMS.Controllers.api
                 string sortOrder = sSortDir_0;
 
                 //get total value count
-                var Count = _paymentPerMonthRepository.GetAll().Count();
+                var Count = 0;
 
                 var Payments = new List<PaymentGridItemDto>();
 
                 //Search query when sSearch is not empty
                 if (sSearch != "" && sSearch != null) //If there is search query
                 {
-
-                    Payments = Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll()
-                        .Where(a => a.Category.Title.ToString().ToLower().Contains(sSearch.ToLower())
-                                      || a.CreatedDate.ToString().ToLower().Contains(sSearch.ToLower())
-                                      || a.Sum.ToString().ToLower().Contains(sSearch.ToLower()))                                      
-                                      .ToList());
+                    if (MemoryCacher.GetValue(Constant.PaymentPerMonth) != null)
+                    {
+                        //Get the list from cache
+                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonth);
+                    }
+                    else
+                    {
+                        Payments = Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll()
+                            .Where(a => a.Category.Title.ToString().ToLower().Contains(sSearch.ToLower())
+                                          || a.CreatedDate.ToString().ToLower().Contains(sSearch.ToLower())
+                                          || a.Sum.ToString().ToLower().Contains(sSearch.ToLower()))
+                                          .ToList());
+                    }
 
                     Count = Payments.Count();
                     // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
@@ -52,13 +60,22 @@ namespace MyBudgetCMS.Controllers.api
                 }
                 else
                 {
-                    //get data from database
-                    Payments = Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll() //speficiy conditions if there is any using .Where(Condition)                             
-                                       .ToList());
+                    if (MemoryCacher.GetValue(Constant.PaymentPerMonth) != null)
+                    {
+                        //Get the list from cache
+                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonth);
+                    }
+                    else
+                    {
+                        //get data from database
+                        Payments = Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll().ToList());
+                    }
 
                     // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
                     Payments = SortFunction(iSortCol, sortOrder, Payments).Skip(iDisplayStart).Take(iDisplayLength).ToList();
                 }
+
+                Count = Payments.Count();
 
                 var PaymentsPaged = new SysDataTablePager<PaymentGridItemDto>(Payments, Count, Count, sEcho);
 

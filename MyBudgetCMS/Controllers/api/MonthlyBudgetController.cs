@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using NLog;
@@ -33,33 +34,54 @@ namespace MyBudgetCMS.Controllers.api
                 string sortOrder = sSortDir_0;
 
                 //get total value count
-                var Count = _monthlyBudgetRepository.GetAll().Count();
+                var Count = 0;
 
                 var MonthlyBudgets = new List<MonthlyBudgetGridItemDto>();
 
                 //Search query when sSearch is not empty
                 if (sSearch != "" && sSearch != null) //If there is search query
                 {
+                    if (MemoryCacher.GetValue(Constant.MonthlyBudgetList) != null)
+                    {
+                        //Get the list from cache
+                        MonthlyBudgets = (List<MonthlyBudgetGridItemDto>)MemoryCacher.GetValue(Constant.MonthlyBudgetList);
+                    }
+                    else
+                    {
+                        MonthlyBudgets = Mapper.Map<List<MonthlyBudgetGridItemDto>>(_monthlyBudgetRepository.GetAll()
+                            .Where(a => a.Date.ToString().ToLower().Contains(sSearch.ToLower())
+                                          || a.Budget.ToString().ToLower().Contains(sSearch.ToLower())
+                                          || a.Id.ToString().ToLower().Contains(sSearch.ToLower()))
+                                          .ToList());
 
-                    MonthlyBudgets = Mapper.Map<List<MonthlyBudgetGridItemDto>>(_monthlyBudgetRepository.GetAll()
-                        .Where(a => a.Date.ToString().ToLower().Contains(sSearch.ToLower())
-                                      || a.Budget.ToString().ToLower().Contains(sSearch.ToLower())
-                                      || a.Id.ToString().ToLower().Contains(sSearch.ToLower()))
-                                      .ToList());
+                        Count = MonthlyBudgets.Count();
+                        // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
+                        MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
+
+                        MemoryCacher.Add(Constant.CategoryList, MonthlyBudgets, DateTimeOffset.Now.AddMinutes(30));
+                    }
 
                     Count = MonthlyBudgets.Count();
-                    // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
-                    MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
                 }
                 else
                 {
-                    //get data from database
-                    MonthlyBudgets = Mapper.Map<List<MonthlyBudgetGridItemDto>>(_monthlyBudgetRepository.GetAll() //speficiy conditions if there is any using .Where(Condition)                             
-                                       .ToList());
+                    if (MemoryCacher.GetValue(Constant.MonthlyBudgetList) != null)
+                    {
+                        //Get the list from cache
+                        MonthlyBudgets = (List<MonthlyBudgetGridItemDto>)MemoryCacher.GetValue(Constant.MonthlyBudgetList);
+                    }
 
-                    // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
-                    MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
-                }   
+                    else
+                    {
+                        //get data from database
+                        MonthlyBudgets = Mapper.Map<List<MonthlyBudgetGridItemDto>>(_monthlyBudgetRepository.GetAll().ToList());
+
+                        // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
+                        MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
+                    }
+
+                    Count = MonthlyBudgets.Count();
+                }
 
                 var MonthlyBudgetsPaged = new SysDataTablePager<MonthlyBudgetGridItemDto>(MonthlyBudgets, Count, Count, sEcho);
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using MyBudgetCMS.Models.Entities;
@@ -74,6 +75,7 @@ namespace MyBudgetCMS.Controllers
 
                 PaymentPerMonth dto = Mapper.Map<PaymentPerMonth>(model);
                 _paymentPerMonthRepository.Add(dto);
+                InitState();
 
                 return RedirectToAction("Index");
             }
@@ -146,12 +148,7 @@ namespace MyBudgetCMS.Controllers
 
                     ViewBag.Budgets = LoadBudgets();
                     ViewBag.Categories = LoadCategories();
-
-                    //  Get the url for the action method:  
-                    var url = Url.Action("EditPaymentPerMonth", "PaymentPerMonth", new { Id = model.Id });
-
-                    //  Remove the item from cache  
-                    Response.RemoveOutputCacheItem(url);
+                    InitState();
 
                     return View(model);
                 }
@@ -172,6 +169,7 @@ namespace MyBudgetCMS.Controllers
             try
             {
                 _paymentPerMonthRepository.Delete(id);
+                InitState();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -205,6 +203,12 @@ namespace MyBudgetCMS.Controllers
                 }).OrderBy(xx => xx.Text).ToList();
 
             return categories;
+        }
+
+        private void InitState()
+        {
+            MemoryCacher.Delete(Constant.PaymentPerMonth);
+            MemoryCacher.Add(Constant.PaymentPerMonth, Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(30));
         }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using MyBudgetCMS.Models.Entities;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Data.Entity;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -50,6 +48,7 @@ namespace MyBudgetCMS.Controllers
 
                 MonthlyBudget dto = Mapper.Map<MonthlyBudget>(model);
                 _monthlyBudgetRepository.Add(dto);
+                InitState();
 
                 return RedirectToAction("Index");
             }
@@ -113,12 +112,7 @@ namespace MyBudgetCMS.Controllers
 
                     //Update dto entity
                     _monthlyBudgetRepository.Update(dto);
-
-                    //  Get the url for the action method:  
-                    var url = Url.Action("EditMonthlyBudget", "MonthlyBudget", new { Id = model.Id });
-
-                    //  Remove the item from cache  
-                    Response.RemoveOutputCacheItem(url);
+                    InitState();
 
                     return View(model);
                 }
@@ -139,6 +133,7 @@ namespace MyBudgetCMS.Controllers
             try
             {
                 _monthlyBudgetRepository.Delete(id);
+                InitState();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -148,6 +143,12 @@ namespace MyBudgetCMS.Controllers
                 logger.Error("==============================");
                 return null;
             }
+        }
+
+        private void InitState()
+        {
+            MemoryCacher.Delete(Constant.MonthlyBudgetList);
+            MemoryCacher.Add(Constant.MonthlyBudgetList, (List<MonthlyBudgetGridItemDto>)MemoryCacher.GetValue(Constant.MonthlyBudgetList), DateTimeOffset.Now.AddMinutes(30));
         }
     }
 }

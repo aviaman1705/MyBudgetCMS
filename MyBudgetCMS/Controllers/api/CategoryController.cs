@@ -37,19 +37,28 @@ namespace MyBudgetCMS.Controllers.Api
                 string sortOrder = sSortDir_0;
 
                 //get total value count
-                var Count = _categoryRepository.GetAll().Count();
+                var Count = 0;
 
                 var Categories = new List<CategoryGridItemDto>();
 
                 //Search query when sSearch is not empty
                 if (sSearch != "" && sSearch != null) //If there is search query
                 {
+                    if (MemoryCacher.GetValue(Constant.CategoryList) != null)
+                    {
+                        //Get the list from cache
+                        Categories = (List<CategoryGridItemDto>)MemoryCacher.GetValue(Constant.CategoryList);
+                    }
+                    else
+                    {
+                        Categories = Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().Where(a => a.Title.ToLower().Contains(sSearch.ToLower())
+                                          || a.Parent.Title.ToLower().Contains(sSearch.ToLower())
+                                          || a.TypeOfPayment.Title.ToLower().Contains(sSearch.ToLower())
+                                          )
+                                          .ToList());
 
-                    Categories = Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().Where(a => a.Title.ToLower().Contains(sSearch.ToLower())
-                                      || a.Parent.Title.ToLower().Contains(sSearch.ToLower())
-                                      || a.TypeOfPayment.Title.ToLower().Contains(sSearch.ToLower())
-                                      )
-                                      .ToList());
+                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(30));
+                    }
 
                     Count = Categories.Count();
                     // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
@@ -57,10 +66,19 @@ namespace MyBudgetCMS.Controllers.Api
                 }
                 else
                 {
-                    //get data from database
-                    Categories = Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll() //speficiy conditions if there is any using .Where(Condition)                             
-                                       .ToList());
+                    if (MemoryCacher.GetValue(Constant.CategoryList) != null)
+                    {
+                        //Get the list from cache
+                        Categories = (List<CategoryGridItemDto>)MemoryCacher.GetValue(Constant.CategoryList);
+                    }
+                    else
+                    {
+                        //get data from database
+                        Categories = Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().ToList());
+                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(30));
+                    }
 
+                    Count = Categories.Count();
                     // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
                     Categories = SortFunction(iSortCol, sortOrder, Categories).Skip(iDisplayStart).Take(iDisplayLength).ToList();
                 }

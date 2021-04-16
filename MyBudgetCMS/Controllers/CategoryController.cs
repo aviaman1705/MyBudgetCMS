@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using MyBudgetCMS.Models.Entities;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MyBudgetCMS.Controllers
@@ -15,6 +14,7 @@ namespace MyBudgetCMS.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private ICategoryRepository _categoryRepository;
         private ITypeOfPaymentRepository _typeOfPaymentRepository;
@@ -76,6 +76,7 @@ namespace MyBudgetCMS.Controllers
 
                 Category dto = Mapper.Map<Category>(model);
                 _categoryRepository.Add(dto);
+                InitState();
 
                 return RedirectToAction("Index");
             }
@@ -156,12 +157,7 @@ namespace MyBudgetCMS.Controllers
                     _categoryRepository.Update(dto);
                     ViewBag.TypesOfPayments = LoadTypesOfPayments();
                     ViewBag.Parents = LoadParents();
-
-                    //  Get the url for the action method:  
-                    var url = Url.Action("EditCategory", "Category", new { Id = model.Id });
-
-                    //  Remove the item from cache  
-                    Response.RemoveOutputCacheItem(url);
+                    InitState();
 
                     return View(model);
                 }
@@ -182,6 +178,7 @@ namespace MyBudgetCMS.Controllers
             try
             {
                 _categoryRepository.Delete(id);
+                InitState();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -216,6 +213,12 @@ namespace MyBudgetCMS.Controllers
                 }).OrderBy(xx => xx.Text).ToList();
 
             return parents;
+        }
+
+        private void InitState()
+        {
+            MemoryCacher.Delete(Constant.CategoryList);
+            MemoryCacher.Add(Constant.CategoryList, Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(30));
         }
     }
 }
