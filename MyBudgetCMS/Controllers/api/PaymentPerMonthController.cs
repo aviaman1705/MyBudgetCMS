@@ -6,8 +6,6 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace MyBudgetCMS.Controllers.api
@@ -40,10 +38,10 @@ namespace MyBudgetCMS.Controllers.api
                 //Search query when sSearch is not empty
                 if (sSearch != "" && sSearch != null) //If there is search query
                 {
-                    if (MemoryCacher.GetValue(Constant.PaymentPerMonth) != null)
+                    if (MemoryCacher.GetValue(Constant.PaymentPerMonthList) != null)
                     {
                         //Get the list from cache
-                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonth);
+                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonthList);
                     }
                     else
                     {
@@ -52,6 +50,8 @@ namespace MyBudgetCMS.Controllers.api
                                           || a.CreatedDate.ToString().ToLower().Contains(sSearch.ToLower())
                                           || a.Sum.ToString().ToLower().Contains(sSearch.ToLower()))
                                           .ToList());
+
+                        MemoryCacher.Add(Constant.PaymentPerMonthList, Payments, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     Count = Payments.Count();
@@ -60,15 +60,16 @@ namespace MyBudgetCMS.Controllers.api
                 }
                 else
                 {
-                    if (MemoryCacher.GetValue(Constant.PaymentPerMonth) != null)
+                    if (MemoryCacher.GetValue(Constant.PaymentPerMonthList) != null)
                     {
                         //Get the list from cache
-                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonth);
+                        Payments = (List<PaymentGridItemDto>)MemoryCacher.GetValue(Constant.PaymentPerMonthList);
                     }
                     else
                     {
                         //get data from database
                         Payments = Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll().ToList());
+                        MemoryCacher.Add(Constant.PaymentPerMonthList, Payments, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  

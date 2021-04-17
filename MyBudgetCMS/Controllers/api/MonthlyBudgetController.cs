@@ -58,7 +58,7 @@ namespace MyBudgetCMS.Controllers.api
                         // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
                         MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
 
-                        MemoryCacher.Add(Constant.CategoryList, MonthlyBudgets, DateTimeOffset.Now.AddMinutes(30));
+                        MemoryCacher.Add(Constant.MonthlyBudgetList, MonthlyBudgets, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     Count = MonthlyBudgets.Count();
@@ -75,12 +75,13 @@ namespace MyBudgetCMS.Controllers.api
                     {
                         //get data from database
                         MonthlyBudgets = Mapper.Map<List<MonthlyBudgetGridItemDto>>(_monthlyBudgetRepository.GetAll().ToList());
-
-                        // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
-                        MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();
+                        MemoryCacher.Add(Constant.MonthlyBudgetList, MonthlyBudgets, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     Count = MonthlyBudgets.Count();
+
+                    // Call SortFunction to provide sorted Data, then Skip using iDisplayStart  
+                    MonthlyBudgets = SortFunction(iSortCol, sortOrder, MonthlyBudgets).Skip(iDisplayStart).Take(iDisplayLength).ToList();                    
                 }
 
                 var MonthlyBudgetsPaged = new SysDataTablePager<MonthlyBudgetGridItemDto>(MonthlyBudgets, Count, Count, sEcho);

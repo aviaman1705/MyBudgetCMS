@@ -218,7 +218,7 @@ namespace MyBudgetCMS.Controllers
         private void InitState()
         {
             MemoryCacher.Delete(Constant.CategoryList);
-            MemoryCacher.Add(Constant.CategoryList, Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(30));
+            MemoryCacher.Add(Constant.CategoryList, Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
         }
     }
 }

@@ -148,7 +148,7 @@ namespace MyBudgetCMS.Controllers
         private void InitState()
         {
             MemoryCacher.Delete(Constant.MonthlyBudgetList);
-            MemoryCacher.Add(Constant.MonthlyBudgetList, (List<MonthlyBudgetGridItemDto>)MemoryCacher.GetValue(Constant.MonthlyBudgetList), DateTimeOffset.Now.AddMinutes(30));
+            MemoryCacher.Add(Constant.MonthlyBudgetList, (List<MonthlyBudgetGridItemDto>)MemoryCacher.GetValue(Constant.MonthlyBudgetList), DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
         }
     }
 }

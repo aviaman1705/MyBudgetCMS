@@ -207,8 +207,8 @@ namespace MyBudgetCMS.Controllers
 
         private void InitState()
         {
-            MemoryCacher.Delete(Constant.PaymentPerMonth);
-            MemoryCacher.Add(Constant.PaymentPerMonth, Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(30));
+            MemoryCacher.Delete(Constant.PaymentPerMonthList);
+            MemoryCacher.Add(Constant.PaymentPerMonthList, Mapper.Map<List<PaymentGridItemDto>>(_paymentPerMonthRepository.GetAll().ToList()), DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
         }
     }
 }

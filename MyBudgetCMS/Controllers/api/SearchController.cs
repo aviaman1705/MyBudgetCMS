@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyBudgetCMS.Infrastructure;
 using MyBudgetCMS.Interfaces;
 using MyBudgetCMS.Models.Dto;
 using NLog;
@@ -34,7 +35,15 @@ namespace MyBudgetCMS.Controllers.api
 
                 var SearchItems = new List<SearchDto>();
 
-                SearchItems = Mapper.Map<List<SearchDto>>(_searchRepository.Search(sSearch));
+                if(MemoryCacher.GetValue(Constant.SearchList) != null)
+                {
+                    SearchItems = (List<SearchDto>)MemoryCacher.GetValue(Constant.SearchList);
+                }
+                else
+                {
+                    SearchItems = Mapper.Map<List<SearchDto>>(_searchRepository.Search(sSearch));
+                    MemoryCacher.Add(Constant.SearchList, SearchItems, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
+                }
 
                 //get total value count
                 var Count = SearchItems.Count();

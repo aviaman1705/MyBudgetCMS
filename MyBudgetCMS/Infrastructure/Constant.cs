@@ -9,6 +9,8 @@ namespace MyBudgetCMS.Infrastructure
     {
         public static string CategoryList => "category-list";
         public static string MonthlyBudgetList => "monthly-budget-list";
-        public static string PaymentPerMonth => "payment-per-month-list";
+        public static string PaymentPerMonthList => "payment-per-month-list";
+        public static string SearchList => "search-list";
+        public static int CacheTime => 30;
     }
 }

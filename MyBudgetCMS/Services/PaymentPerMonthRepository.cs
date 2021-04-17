@@ -53,6 +53,7 @@ namespace MyBudgetCMS.Services
             {
                 entity.CategoryID = item.CategoryID;                
                 entity.Sum = item.Sum;
+                entity.ActionDate = item.ActionDate;
                 context.SaveChanges();
                 isUpdated = true;
             }

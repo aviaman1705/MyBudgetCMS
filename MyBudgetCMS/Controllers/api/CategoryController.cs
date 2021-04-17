@@ -57,7 +57,7 @@ namespace MyBudgetCMS.Controllers.Api
                                           )
                                           .ToList());
 
-                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(30));
+                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     Count = Categories.Count();
@@ -75,7 +75,7 @@ namespace MyBudgetCMS.Controllers.Api
                     {
                         //get data from database
                         Categories = Mapper.Map<List<CategoryGridItemDto>>(_categoryRepository.GetAll().ToList());
-                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(30));
+                        MemoryCacher.Add(Constant.CategoryList, Categories, DateTimeOffset.Now.AddMinutes(Constant.CacheTime));
                     }
 
                     Count = Categories.Count();
